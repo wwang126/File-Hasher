@@ -15,11 +15,12 @@ for filename in fileNames:
     print(filename)
 
 print(fileNames[0])
-fileBinary = open(fileNames[0],"rb").read()
+fileIn = open(fileNames[0],"rb")
+fileBinary = fileIn.read()
+fileIn.close();
 fileHash = 0
 #hash file with crc
 fileHash = zlib.crc32(fileBinary)
-#fileBinary.close()
 fileHex = hex(fileHash)
 print("Numerical Hash: " ,fileHash)
 print("Hex Hash: ", fileHex)
