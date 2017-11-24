@@ -17,7 +17,9 @@ for filename in fileNames:
 print(fileNames[0])
 fileBinary = open(fileNames[0],"rb").read()
 fileHash = 0
-fileHash = zlib.crc32(fileBinary)
 #hash file with crc
-print(fileHash)
-fileHash.close()
+fileHash = zlib.crc32(fileBinary)
+#fileBinary.close()
+fileHex = hex(fileHash)
+print("Numerical Hash: " ,fileHash)
+print("Hex Hash: ", fileHex)
