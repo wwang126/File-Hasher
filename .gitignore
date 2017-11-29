@@ -1,3 +1,6 @@
+#Ignore Mac Stuff
+.DS_Store
+
 #Test files
 *.mkv
 
