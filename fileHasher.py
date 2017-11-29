@@ -11,17 +11,24 @@ fileNames = []
 for filename in glob.glob('*.mkv'):
    fileNames.append(filename)
 
-toWrite = ""
+toDisplay = ""
+toWrite = ";SFV Test\n"
 for filename in fileNames:
     print("Reading: ", filename)
-    toWrite += str(filename) + "\n"
+    toDisplay += str(filename) + "\n"
+    toWrite += str(filename)
     fileIn = open(filename,"rb")
     fileBinary = fileIn.read()
-    fileIn.close();
+    fileIn.close()
     fileHash = 0
     #hash file with crc
     fileHash = zlib.crc32(fileBinary)
     fileHex = format(fileHash, 'x')
-    toWrite += "Numerical Hash: "  + str(fileHash) + "\n"
-    toWrite += "Hex Hash: " + str(fileHex) + "\n"
-print (toWrite)
+    toDisplay += "Numerical Hash: "  + str(fileHash) + "\n"
+    toDisplay += "Hex Hash: " + str(fileHex) + "\n"
+    toWrite += " " + str(fileHex) + "\n"
+print (toDisplay)
+
+fileWrite = open("SFVtest.sfv" , "w+")
+fileWrite.write(toWrite)
+fileWrite.close()
