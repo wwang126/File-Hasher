@@ -55,9 +55,9 @@ def hashChecker(fileName,fileHash):
     fileHex = format(newHash, 'x')
     print("Comparing: ", fileHex , " and " , fileHash)
     if(fileHex == fileHash):
-        print("File is OK!")
+        print("\033[0;32mFile is OK!\033[0;0m")
     else:
-        print("File is not ok.")
+        print("\033[1;31mFile is not ok.\033[0;0m")
 
 def main():
     #sfvWriter()
