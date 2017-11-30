@@ -4,6 +4,15 @@ import glob
 import os
 import sys, getopt
 
+#takes a fileName and returns it as a hex value
+def crc32(fileName):
+        fileIn = open(fileName,"rb")
+        fileBinary = fileIn.read()
+        fileIn.close()
+        #hash file with crc
+        fileHash = zlib.crc32(fileBinary)
+        return fileHash
+
 def sfvWriter():
     #list of file names in directory
     fileNames = []
@@ -18,13 +27,7 @@ def sfvWriter():
         print("Reading: ", filename)
         toDisplay += str(filename) + "\n"
         toWrite += str(filename)
-        fileIn = open(filename,"rb")
-        fileBinary = fileIn.read()
-        fileIn.close()
-        fileHash = 0
-        #hash file with crc
-        fileHash = zlib.crc32(fileBinary)
-        fileHex = format(fileHash, 'x')
+        fileHex = format(crc32(filename), 'x')
         toDisplay += "Numerical Hash: "  + str(fileHash) + "\n"
         toDisplay += "Hex Hash: " + str(fileHex) + "\n"
         toWrite += " " + str(fileHex) + "\n"
@@ -48,11 +51,7 @@ def sfvChecker(sfvName):
         line = sfvFile.readline()
 #Checks if a file matches its CRC32 hash
 def hashChecker(fileName,fileHash):
-    f = open(fileName, "rb")
-    fileBinary = f.read();
-    f.close;
-    newHash = zlib.crc32(fileBinary)
-    fileHex = format(newHash, 'x')
+    fileHex = format(crc32(fileName), 'x')
     print("Comparing: ", fileHex , " and " , fileHash)
     if(fileHex == fileHash):
         print("\033[0;32mFile is OK!\033[0;0m")
