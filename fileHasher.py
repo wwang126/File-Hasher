@@ -34,8 +34,35 @@ def sfvWriter():
     fileWrite.write(toWrite)
     fileWrite.close()
 
+#Reads .sfv files
+def sfvChecker(sfvName):
+    sfvFile = open(sfvName, "r")
+    line = sfvFile.readline()
+    while line:
+        print(line)
+        fileName = line[0:-10]
+        fileHash = line[-9:-1]
+        print("File Name: ", fileName)
+        print("File Hash: ", fileHash)
+        hashChecker(fileName,fileHash)
+        line = sfvFile.readline()
+#Checks if a file matches its CRC32 hash
+def hashChecker(fileName,fileHash):
+    f = open(fileName, "rb")
+    fileBinary = f.read();
+    f.close;
+    newHash = zlib.crc32(fileBinary)
+    fileHex = format(newHash, 'x')
+    print("Comparing: ", fileHex , " and " , fileHash)
+    if(fileHex == fileHash):
+        print("File is OK!")
+    else:
+        print("File is not ok.")
+
 def main():
-    sfvWriter()
+    #sfvWriter()
+    sfvName = "SFVtest.sfv"
+    sfvChecker(sfvName)
 
 if __name__ == "__main__":
     main()
