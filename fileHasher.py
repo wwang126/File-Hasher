@@ -6,11 +6,14 @@ import sys, getopt
 
 #takes a fileName and returns it as a hex value
 def crc32(fileName):
-        fileIn = open(fileName,"rb")
-        fileBinary = fileIn.read()
-        fileIn.close()
-        #hash file with crc
-        fileHash = zlib.crc32(fileBinary)
+    bufferSize = 65536
+    with open(fileName, "rb") as fileIn:
+        fileBinary = fileIn.read(bufferSize)
+        fileHash = 0
+        while len(fileBinary) > 0:
+            #hash file with crc
+            fileHash = zlib.crc32(fileBinary, fileHash)
+            fileBinary = fileIn.read(bufferSize)
         return fileHash
 
 def sfvWriter():
