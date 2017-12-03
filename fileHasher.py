@@ -7,10 +7,17 @@ import argparse
 
 #takes a fileName and returns it as a hex value
 def crc32(fileName):
+    try:
+        fileIn = open(fileName, "rb")
+    except IOError:
+        print ("Couldn't read file : ", fileName)
+        sys.exit()
+    except FileNotFoundError:
+        print (fileName, " not found!")
+        sys.exit()
     #64kb buffer
-    #TODO:Handle IO exceptions
     bufferSize = 65536
-    with open(fileName, "rb") as fileIn:
+    with fileIn:
         fileBinary = fileIn.read(bufferSize)
         fileHash = 0
         while len(fileBinary) > 0:
@@ -18,6 +25,7 @@ def crc32(fileName):
             fileHash = zlib.crc32(fileBinary, fileHash)
             fileBinary = fileIn.read(bufferSize)
         return fileHash
+
 
 def sfvWriter():
     #list of file names in directory
@@ -45,20 +53,25 @@ def sfvWriter():
 
 #Reads .sfv files
 def sfvChecker(sfvName):
-    sfvFile = open(sfvName, "r")
-    line = sfvFile.readline()
-    while line:
-        print(line)
-        fileName = line[0:-10]
-        fileHash = line[-9:-1]
-        print("File Name: ", fileName)
-        print("File Hash: ", fileHash)
-        hashChecker(fileName,fileHash)
+    try:
+        sfvFile = open(sfvName, "r")
+    except FileNotFoundError:
+        print("Invalid File Name!")
+        sys.exit()
+    #If no error read and check
+    with sfvFile:
         line = sfvFile.readline()
+        while line:
+            print(line)
+            fileName = line[0:-10]
+            fileHash = line[-9:-1]
+            print("File Name: ", fileName)
+            print("File Hash: ", fileHash)
+            hashChecker(fileName,fileHash)
+            line = sfvFile.readline()
 #Checks if a file matches its CRC32 hash
 def hashChecker(fileName,fileHash):
     fileHex = format(crc32(fileName), 'x')
-    print("Comparing: ", fileHex , " and " , fileHash)
     if(fileHex == fileHash):
         print("\033[0;32mFile is OK!\033[0;0m")
     else:
@@ -83,7 +96,8 @@ def main():
     if(args.hash):
         print("Hashing")
     if(args.verify):
-        print("Verifying")
+        print("Verifying: ", args.inputName)
+        sfvChecker(args.inputName)
     #sfvWriter()
     #sfvName = args.outputName
     #sfvChecker(sfvName)
