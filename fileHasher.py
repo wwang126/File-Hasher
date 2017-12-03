@@ -24,10 +24,10 @@ def crc32(fileName):
             #hash file with crc
             fileHash = zlib.crc32(fileBinary, fileHash)
             fileBinary = fileIn.read(bufferSize)
-        return fileHash
+    return fileHash
 
 
-def sfvWriter():
+def sfvWriter(outputName):
     #list of file names in directory
     fileNames = []
 
@@ -42,12 +42,11 @@ def sfvWriter():
         toDisplay += str(filename) + "\n"
         toWrite += str(filename)
         fileHex = format(crc32(filename), 'x')
-        toDisplay += "Numerical Hash: "  + str(fileHash) + "\n"
-        toDisplay += "Hex Hash: " + str(fileHex) + "\n"
+        toDisplay += "CRC32 Hash: " + str(fileHex) + "\n"
         toWrite += " " + str(fileHex) + "\n"
     print (toDisplay)
 
-    fileWrite = open("SFVtest.sfv" , "w+")
+    fileWrite = open(outputName , "w+")
     fileWrite.write(toWrite)
     fileWrite.close()
 
@@ -62,13 +61,16 @@ def sfvChecker(sfvName):
     with sfvFile:
         line = sfvFile.readline()
         while line:
-            print(line)
-            fileName = line[0:-10]
-            fileHash = line[-9:-1]
-            print("File Name: ", fileName)
-            print("File Hash: ", fileHash)
-            hashChecker(fileName,fileHash)
-            line = sfvFile.readline()
+            if(line[0] != ';'):
+                print(line)
+                fileName = line[0:-10]
+                fileHash = line[-9:-1]
+                print("File Name: ", fileName)
+                print("File Hash: ", fileHash)
+                hashChecker(fileName,fileHash)
+                line = sfvFile.readline()
+            else:
+                line = sfvFile.readline()
 #Checks if a file matches its CRC32 hash
 def hashChecker(fileName,fileHash):
     fileHex = format(crc32(fileName), 'x')
@@ -95,6 +97,8 @@ def main():
     args = parser.parse_args()
     if(args.hash):
         print("Hashing")
+        print(args.outputName)
+        sfvWriter(args.outputName)
     if(args.verify):
         print("Verifying: ", args.inputName)
         sfvChecker(args.inputName)
