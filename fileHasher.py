@@ -4,6 +4,7 @@ import glob
 import os
 import sys, getopt
 import argparse
+import datetime
 
 #takes a fileName and returns it as a hex value
 def crc32(fileName):
@@ -32,10 +33,12 @@ def sfvWriter(outputName):
     fileNames = []
 
     #list files that are mkv
-    for filename in glob.glob('*.mkv'):
+    for filename in glob.glob('*'):
        fileNames.append(filename)
 
-    toWrite = ";SFV Test\n"
+    toWrite = "Hashed: {:%Y-%m-%d %H:%M:%S}".format(datetime.datetime.now())
+    toWrite += "\n"
+    print(toWrite)
     for filename in fileNames:
         print("Reading:", filename)
         toWrite += str(filename)
@@ -100,9 +103,11 @@ def main():
     parser.add_argument('-v', '--verify', action='store_true',
                         default=False, dest='verify',
                         help='Verify\'s sfv file is true')
+    parser.add_argument('-t', '--type', action='store',
+                        dest= 'token',
+                        help='Choose file type to verify')
     args = parser.parse_args()
     if(args.hash):
-        print("Hashing:", args.outputName)
         sfvWriter(args.outputName)
     if(args.verify):
         sfvName = args.inputName
