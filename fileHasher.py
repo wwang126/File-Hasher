@@ -3,9 +3,12 @@ import zlib
 import glob
 import os
 import sys, getopt
+import argparse
 
 #takes a fileName and returns it as a hex value
 def crc32(fileName):
+    #64kb buffer
+    #TODO:Handle IO exceptions
     bufferSize = 65536
     with open(fileName, "rb") as fileIn:
         fileBinary = fileIn.read(bufferSize)
@@ -62,9 +65,28 @@ def hashChecker(fileName,fileHash):
         print("\033[1;31mFile is not ok.\033[0;0m")
 
 def main():
+    #arg parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o', action= 'store',
+                        dest= 'outputName',
+                        help='Set .sfv output name' )
+    parser.add_argument('-i', action= 'store',
+                        dest= 'inputName',
+                        help='Set .sfv to read' )
+    parser.add_argument('-s', '--hash', action='store_true',
+                        default=False, dest='hash',
+                        help='hash if set' )
+    parser.add_argument('-v', '--verify', action='store_true',
+                        default=False, dest='verify',
+                        help='Verify\'s sfv file is true')
+    args = parser.parse_args()
+    if(args.hash):
+        print("Hashing")
+    if(args.verify):
+        print("Verifying")
     #sfvWriter()
-    sfvName = "SFVtest.sfv"
-    sfvChecker(sfvName)
+    #sfvName = args.outputName
+    #sfvChecker(sfvName)
 
 if __name__ == "__main__":
     main()
