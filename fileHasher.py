@@ -35,20 +35,26 @@ def sfvWriter(outputName):
     for filename in glob.glob('*.mkv'):
        fileNames.append(filename)
 
-    toDisplay = ""
     toWrite = ";SFV Test\n"
     for filename in fileNames:
-        print("Reading: ", filename)
-        toDisplay += str(filename) + "\n"
+        print("Reading:", filename)
         toWrite += str(filename)
         fileHex = format(crc32(filename), 'x')
-        toDisplay += "CRC32 Hash: " + str(fileHex) + "\n"
+        print("CRC32 Hash: " + str(fileHex) + "\n")
         toWrite += " " + str(fileHex) + "\n"
-    print (toDisplay)
-
-    fileWrite = open(outputName , "w+")
-    fileWrite.write(toWrite)
-    fileWrite.close()
+    if outputName is None:
+        print("No output specified")
+        sys.exit()
+    try:
+        fileWrite = open(outputName , "w+")
+        fileWrite.write(toWrite)
+        fileWrite.close()
+    except IOError:
+        print ("Couldn't read file : ", fileName)
+        sys.exit()
+    except FileNotFoundError:
+        print (fileName, " not found!")
+        sys.exit()
 
 #Reads .sfv files
 def sfvChecker(sfvName):
@@ -96,12 +102,17 @@ def main():
                         help='Verify\'s sfv file is true')
     args = parser.parse_args()
     if(args.hash):
-        print("Hashing")
-        print(args.outputName)
+        print("Hashing:", args.outputName)
         sfvWriter(args.outputName)
     if(args.verify):
-        print("Verifying: ", args.inputName)
-        sfvChecker(args.inputName)
+        sfvName = args.inputName
+        if sfvName is None:
+            sfvName = glob.glob('*.sfv')
+        if sfvName is None:
+            print(".sfv not found!")
+            sys.ext()
+        print("Verifying: ", sfvName[0])
+        sfvChecker(sfvName[0])
     #sfvWriter()
     #sfvName = args.outputName
     #sfvChecker(sfvName)
