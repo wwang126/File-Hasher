@@ -6,8 +6,8 @@ import sys, getopt
 import argparse
 import datetime
 
-#takes a fileName and returns it as a hex value
 def crc32(fileName):
+    """Takes a fileName and returns it as a hex value"""
     try:
         fileIn = open(fileName, "rb")
     except IOError:
@@ -29,12 +29,13 @@ def crc32(fileName):
 
 
 def sfvWriter(outputName):
+    """Writes sfv files based on outputName"""
     #list of file names in directory
     fileNames = []
 
     #list files that are mkv
     for filename in glob.glob('*'):
-       fileNames.append(filename)
+        fileNames.append(filename)
 
     toWrite = "Hashed: {:%Y-%m-%d %H:%M:%S}".format(datetime.datetime.now())
     toWrite += "\n"
@@ -53,14 +54,15 @@ def sfvWriter(outputName):
         fileWrite.write(toWrite)
         fileWrite.close()
     except IOError:
-        print ("Couldn't read file : ", fileName)
+        print("Couldn't read file : ", fileName)
         sys.exit()
     except FileNotFoundError:
-        print (fileName, " not found!")
+        print(fileName, " not found!")
         sys.exit()
 
 #Reads .sfv files
 def sfvChecker(sfvName):
+    """Reads an sfv file and checks them for integrity """
     try:
         sfvFile = open(sfvName, "r")
     except FileNotFoundError:
@@ -80,8 +82,9 @@ def sfvChecker(sfvName):
                 line = sfvFile.readline()
             else:
                 line = sfvFile.readline()
-#Checks if a file matches its CRC32 hash
+                
 def hashChecker(fileName,fileHash):
+    """Checks if a file matches its CRC32 hash"""
     fileHex = format(crc32(fileName), 'x')
     if(fileHex == fileHash):
         print("\033[0;32mFile is OK!\033[0;0m")
@@ -115,7 +118,7 @@ def main():
             sfvName = glob.glob('*.sfv')
         if sfvName is None:
             print(".sfv not found!")
-            sys.ext()
+            sys.exit()
         print("Verifying: ", sfvName[0])
         sfvChecker(sfvName[0])
     #sfvWriter()
