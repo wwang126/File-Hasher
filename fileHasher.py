@@ -54,10 +54,10 @@ def sfvWriter(outputName):
         fileWrite.write(toWrite)
         fileWrite.close()
     except IOError:
-        print("Couldn't read file : ", fileName)
+        print("Couldn't read file : ", filename)
         sys.exit()
     except FileNotFoundError:
-        print(fileName, " not found!")
+        print(filename, " not found!")
         sys.exit()
 
 #Reads .sfv files
@@ -82,7 +82,7 @@ def sfvChecker(sfvName):
                 line = sfvFile.readline()
             else:
                 line = sfvFile.readline()
-                
+
 def hashChecker(fileName,fileHash):
     """Checks if a file matches its CRC32 hash"""
     fileHex = format(crc32(fileName), 'x')
