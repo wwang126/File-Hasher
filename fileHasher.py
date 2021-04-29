@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import hashlib
 import zlib
 import glob
@@ -86,7 +87,7 @@ def sfvChecker(sfvName):
 def hashChecker(fileName,fileHash):
     """Checks if a file matches its CRC32 hash"""
     fileHex = format(crc32(fileName), 'x')
-    if(fileHex == fileHash):
+    if(fileHex.lower() == fileHash.lower()):
         print("\033[0;32mFile is OK!\033[0;0m")
     else:
         print("\033[1;31mFile is not ok.\033[0;0m")
@@ -95,32 +96,33 @@ def main():
     #arg parser
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', action= 'store',
-                        dest= 'outputName',
-                        help='Set .sfv output name' )
+                        dest='outputName',
+                        help='Set .sfv output name')
     parser.add_argument('-i', action= 'store',
-                        dest= 'inputName',
-                        help='Set .sfv to read' )
+                        dest='inputName',
+                        help='Set .sfv to read')
     parser.add_argument('-s', '--hash', action='store_true',
                         default=False, dest='hash',
-                        help='hash if set' )
+                        help='hash if set')
     parser.add_argument('-v', '--verify', action='store_true',
                         default=False, dest='verify',
                         help='Verify\'s sfv file is true')
     parser.add_argument('-t', '--type', action='store',
-                        dest= 'token',
+                        dest='token',
                         help='Choose file type to verify')
     args = parser.parse_args()
     if(args.hash):
         sfvWriter(args.outputName)
     if(args.verify):
         sfvName = args.inputName
+        print(sfvName)
         if sfvName is None:
             sfvName = glob.glob('*.sfv')
         if sfvName is None:
             print(".sfv not found!")
             sys.exit()
-        print("Verifying: ", sfvName[0])
-        sfvChecker(sfvName[0])
+        print("Verifying: ", sfvName)
+        sfvChecker(sfvName)
     #sfvWriter()
     #sfvName = args.outputName
     #sfvChecker(sfvName)

@@ -1,6 +1,9 @@
 #Ignore Mac Stuff
 .DS_Store
 
+#Ignore vscode files too
+.vscode
+
 #Test files
 *.mkv
 *.sfv
