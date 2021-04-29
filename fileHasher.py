@@ -11,8 +11,9 @@ def crc32(fileName):
     """Takes a fileName and returns it as a hex value"""
     try:
         fileIn = open(fileName, "rb")
-    except IOError:
+    except IOError as e:
         print ("Couldn't read file : ", fileName)
+        print (e)
         sys.exit()
     except FileNotFoundError:
         print (fileName, " not found!")
@@ -76,6 +77,9 @@ def sfvChecker(sfvName):
             if(line[0] != ';'):
                 print(line)
                 fileName = line[0:-10]
+                #convert windows pathnames to universal paths
+                fileName = fileName.replace('\\','/')
+                fileName = os.path.normpath(fileName)
                 fileHash = line[-9:-1]
                 print("File Name: ", fileName)
                 print("File Hash: ", fileHash)
